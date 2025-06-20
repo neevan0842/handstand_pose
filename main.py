@@ -1,6 +1,7 @@
 import threading
 import cv2
 import mediapipe as mp
+import argparse
 from logger import logger
 from utils import (
     draw_landmarks,
@@ -16,14 +17,28 @@ mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 mp_drawing_styles = mp.solutions.drawing_styles
 thread = threading.Thread(target=speak, daemon=True)
-cap = cv2.VideoCapture(str(r"C:\Users\manoj\Downloads\handstandlong.mp4"))
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Handstand Pose Checker")
+    parser.add_argument(
+        "--filepath",
+        type=str,
+        default=None,
+        help="Path to video file. If not provided, webcam will be used.",
+    )
+    args = parser.parse_args()
+
+    if args.filepath:
+        cap = cv2.VideoCapture(str(args.filepath))
+    else:
+        cap = cv2.VideoCapture(0)
+
     with mp_pose.Pose(
         min_detection_confidence=0.6, min_tracking_confidence=0.6, model_complexity=1
     ) as pose:
         thread.start()
+        write_to_file(content="")
 
         while cap.isOpened():
             success, frame = cap.read()

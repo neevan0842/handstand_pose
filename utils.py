@@ -142,6 +142,7 @@ def speak():
     """
     tts = pyttsx3.init()
     tts.setProperty("rate", 150)
+    sleep(3)  # wait for user to get into position
     while True:
         content = read_from_file(file_name=FILE_NAME)
         if content:
